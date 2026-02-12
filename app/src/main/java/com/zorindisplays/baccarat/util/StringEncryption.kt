@@ -1,4 +1,4 @@
-package com.zorindisplays.display.util
+package com.zorindisplays.baccarat.util
 
 import java.security.MessageDigest
 

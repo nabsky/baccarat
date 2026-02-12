@@ -1,4 +1,4 @@
-package com.zorindisplays.display.ui.screens
+package com.zorindisplays.baccarat.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -8,11 +8,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zorindisplays.display.ui.components.AmountText
-import com.zorindisplays.display.ui.components.CurrencyPosition
-import com.zorindisplays.display.ui.components.MoneyFormat
-import com.zorindisplays.display.ui.components.VerticalAlign
-import com.zorindisplays.display.ui.theme.MontserratBold
+import com.zorindisplays.baccarat.ui.components.AmountText
+import com.zorindisplays.baccarat.ui.components.CurrencyPosition
+import com.zorindisplays.baccarat.ui.components.MoneyFormat
+import com.zorindisplays.baccarat.ui.components.VerticalAlign
+import com.zorindisplays.baccarat.ui.theme.MontserratBold
 
 @Composable
 fun MainScreen() {

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.zorindisplays.display"
+    namespace = "com.zorindisplays.baccarat"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.zorindisplays.display"
+        applicationId = "com.zorindisplays.baccarat"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

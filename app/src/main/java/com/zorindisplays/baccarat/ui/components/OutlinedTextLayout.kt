@@ -1,4 +1,4 @@
-package com.zorindisplays.display.ui.components
+package com.zorindisplays.baccarat.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -1,41 +1,38 @@
 package com.zorindisplays.baccarat.ui.screens
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.zorindisplays.baccarat.ui.components.AmountText
-import com.zorindisplays.baccarat.ui.components.CurrencyPosition
-import com.zorindisplays.baccarat.ui.components.MoneyFormat
-import com.zorindisplays.baccarat.ui.components.VerticalAlign
-import com.zorindisplays.baccarat.ui.theme.MontserratBold
+import com.zorindisplays.baccarat.ui.components.roads.Road
 
 @Composable
 fun MainScreen() {
-    AmountText(
-        amount = 1234567.895,   // → 1 234 567,90
-        //modifier = Modifier.requiredWidth(900.dp).requiredHeight(160.dp),
-        modifier = Modifier.fillMaxSize(),
-        style = TextStyle(
-            fontFamily = MontserratBold,
-            fontSize = 72.sp
-        ),
-        format = MoneyFormat(
-            currency = "€",
-            currencyPosition = CurrencyPosition.Prefix,
-            thousandsSeparator = ' ',
-            decimalSeparator = ',',
-            fractionDigits = 2
-        ),
-        fillColor = Color(0xFFFFD54F),
-        strokeColor = Color.Black,
-        strokeWidth = 6.dp,
-        textAlign = TextAlign.Center,
-        verticalAlign = VerticalAlign.Center,
-        opticalCentering = true
+    Road(
+        centerX = 960f,
+        topY = 185f,
+        cellSize = 46f,
+        colCount = 40
+    )
+    Road(
+        centerX = 477f,
+        topY = 562f,
+        cellSize = 73f,
+        colCount = 12
+    )
+    Road(
+        centerX = 1534f,
+        topY = 562f,
+        cellSize = 23f,
+        colCount = 30
+    )
+    Road(
+        centerX = 1534f,
+        topY = 712f,
+        cellSize = 23f,
+        colCount = 30
+    )
+    Road(
+        centerX = 1534f,
+        topY = 862f,
+        cellSize = 23f,
+        colCount = 30
     )
 }

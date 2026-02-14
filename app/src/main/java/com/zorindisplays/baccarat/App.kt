@@ -6,15 +6,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.zorindisplays.baccarat.ui.screens.MainScreen
+import com.zorindisplays.baccarat.ui.theme.BaccaratTheme
+import com.zorindisplays.baccarat.ui.theme.BaccaratThemeProvider
 import com.zorindisplays.baccarat.ui.theme.DefaultBackground
+import com.zorindisplays.baccarat.ui.theme.baseTheme
+import com.zorindisplays.baccarat.ui.theme.themeVariantBlue
 
 @Composable
 fun App() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DefaultBackground)
-    ) {
-        MainScreen()
+    val base = baseTheme()
+
+    val tokens = themeVariantBlue(base)
+
+    BaccaratThemeProvider(tokens) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BaccaratTheme.colors.screenBackground)
+        ) {
+            MainScreen()
+        }
     }
 }

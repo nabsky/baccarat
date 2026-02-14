@@ -22,8 +22,7 @@ fun TableShoeHandSection(
     width: Float = 618f,
     height: Float = 161f,
 
-    topRowInset: Float = 6f,
-    bottomRowInset: Float = 6f,
+    topBottomRowInset: Float = 6f, // тот же смысл, что в MinMaxSection
 
     tableLabel: String = "TABLE",
     shoeLabel: String = "SHOE",
@@ -45,7 +44,6 @@ fun TableShoeHandSection(
     Canvas(modifier = Modifier.fillMaxSize()) {
 
 /*
-        // фон секции
         drawRect(
             color = backgroundColor,
             topLeft = Offset(startX, startY),
@@ -55,19 +53,24 @@ fun TableShoeHandSection(
 
         val tableRect = Rect(startX, startY, startX + width, startY + height)
 
-        val colW = width / 3f
-        val rowH = height / 2f
+        // Как в MinMaxSection: верх 1/3, низ 2/3
+        val topH = height / 3f
+        val bottomH = height - topH
 
-        fun cellRect(row: Int, col: Int): Rect {
-            val left = tableRect.left + col * colW
-            val right = left + colW
-            val top = tableRect.top + row * rowH
-            val bottom = top + rowH
-            return Rect(left, top, right, bottom)
+        val colW = width / 3f
+
+        fun topCell(col: Int): Rect {
+            val l = tableRect.left + col * colW
+            return Rect(l, tableRect.top, l + colW, tableRect.top + topH)
         }
 
-        fun insetRect(rect: Rect, top: Float = 0f, bottom: Float = 0f): Rect =
-            Rect(rect.left, rect.top + top, rect.right, rect.bottom - bottom)
+        fun bottomCell(col: Int): Rect {
+            val l = tableRect.left + col * colW
+            return Rect(l, tableRect.top + topH, l + colW, tableRect.bottom)
+        }
+
+        fun insetTopRow(rect: Rect): Rect =
+            Rect(rect.left, rect.top + topBottomRowInset, rect.right, rect.bottom - topBottomRowInset)
 
         fun drawCentered(text: String, area: Rect, style: TextStyle) {
             if (text.isEmpty()) return
@@ -77,22 +80,14 @@ fun TableShoeHandSection(
             drawText(layout, topLeft = Offset(x, y), color = textColor)
         }
 
-        // Row 0: labels
-        val r0c0 = insetRect(cellRect(0, 0), top = topRowInset, bottom = topRowInset)
-        val r0c1 = insetRect(cellRect(0, 1), top = topRowInset, bottom = topRowInset)
-        val r0c2 = insetRect(cellRect(0, 2), top = topRowInset, bottom = topRowInset)
+        // Верхняя строка: заголовки (как у min/max)
+        drawCentered(tableLabel, insetTopRow(topCell(0)), labelStyle)
+        drawCentered(shoeLabel,  insetTopRow(topCell(1)), labelStyle)
+        drawCentered(handLabel,  insetTopRow(topCell(2)), labelStyle)
 
-        drawCentered(tableLabel, r0c0, labelStyle)
-        drawCentered(shoeLabel, r0c1, labelStyle)
-        drawCentered(handLabel, r0c2, labelStyle)
-
-        // Row 1: big values (centered under labels)
-        val r1c0 = insetRect(cellRect(1, 0), top = bottomRowInset, bottom = bottomRowInset)
-        val r1c1 = insetRect(cellRect(1, 1), top = bottomRowInset, bottom = bottomRowInset)
-        val r1c2 = insetRect(cellRect(1, 2), top = bottomRowInset, bottom = bottomRowInset)
-
-        drawCentered(tableValue, r1c0, valueStyle)
-        drawCentered(shoeValue, r1c1, valueStyle)
-        drawCentered(handValue, r1c2, valueStyle)
+        // Нижняя строка: значения, по центру объединённой области (2/3 высоты)
+        drawCentered(tableValue, bottomCell(0), valueStyle)
+        drawCentered(shoeValue,  bottomCell(1), valueStyle)
+        drawCentered(handValue,  bottomCell(2), valueStyle)
     }
 }

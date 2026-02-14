@@ -30,7 +30,7 @@ fun baseTheme(): BaccaratThemeTokens = BaccaratThemeTokens(
         minMaxLabel = BaseTextStyle.copy(fontSize = 20.sp),
         minMaxValue = BaseTextStyle.copy(fontSize = 40.sp),
         tableLabel  = BaseTextStyle.copy(fontSize = 20.sp),
-        tableValue  = BaseTextStyle.copy(fontSize = 80.sp),
+        tableValue  = BaseTextStyle.copy(fontSize = 60.sp),
         resultTitle = BaseTextStyle.copy(fontSize = 20.sp),
         resultValue = BaseTextStyle.copy(fontSize = 40.sp),
         pairTitle   = BaseTextStyle.copy(fontSize = 20.sp),

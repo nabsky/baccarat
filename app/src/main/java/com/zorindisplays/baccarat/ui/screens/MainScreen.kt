@@ -2,6 +2,8 @@ package com.zorindisplays.baccarat.ui.screens
 
 import androidx.compose.runtime.Composable
 import com.zorindisplays.baccarat.ui.components.roads.Road
+import com.zorindisplays.baccarat.ui.components.sections.MinMaxSection
+import com.zorindisplays.baccarat.ui.components.sections.TableShoeHandSection
 
 @Composable
 fun MainScreen() {
@@ -35,4 +37,6 @@ fun MainScreen() {
         cellSize = 23f,
         colCount = 30
     )
+    MinMaxSection()
+    TableShoeHandSection()
 }

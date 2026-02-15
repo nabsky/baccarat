@@ -23,7 +23,7 @@ fun MinMaxSection(
     width: Float = 804f,
     height: Float = 161f,
 
-    leftColWidth: Float = 160f,
+    leftColWidth: Float = 120f,
     cellInnerHPadding: Float = 12f,
     topBottomRowInset: Float = 6f,
 
@@ -106,7 +106,7 @@ fun MinMaxSection(
         fun drawLeft(text: String, area: Rect, style: TextStyle, color: Color) {
             if (text.isEmpty()) return
             val layout = tm.measure(text = text, style = style)
-            val x = area.left + cellInnerHPadding
+            val x = area.left
             val y = area.top + (area.height - layout.size.height) / 2f
             drawText(layout, topLeft = Offset(x, y), color = color)
         }

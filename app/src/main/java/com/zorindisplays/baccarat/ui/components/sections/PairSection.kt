@@ -1,11 +1,13 @@
 package com.zorindisplays.baccarat.ui.components.sections
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -37,7 +39,15 @@ fun PairSection(
 
     // цвета
     titleColor: Color = BaccaratTheme.colors.textSecondaryColor,
-    valueColor: Color = BaccaratTheme.colors.textPrimaryColor
+    valueColor: Color = BaccaratTheme.colors.textPrimaryColor,
+
+    // ✅ кольцо слева от значения
+    ringRadiusPx: Float = 17f,
+    ringStrokeWidthPx: Float = 6f,
+    ringGapPx: Float = 10f,
+
+    // ✅ ручная подстройка вертикального центра кольца внутри строки значения
+    ringCenterYOffsetPx: Float = 7f
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float): Dp = with(density) { px.toDp() }
@@ -62,7 +72,11 @@ fun PairSection(
                 titleYOffsetPx = titleYOffsetPx,
                 valueYOffsetPx = valueYOffsetPx,
                 titleColor = titleColor,
-                valueColor = valueColor
+                valueColor = valueColor,
+                ringRadiusPx = ringRadiusPx,
+                ringStrokeWidthPx = ringStrokeWidthPx,
+                ringGapPx = ringGapPx,
+                ringCenterYOffsetPx = ringCenterYOffsetPx
             )
 
             // CENTER
@@ -75,7 +89,11 @@ fun PairSection(
                 titleYOffsetPx = titleYOffsetPx,
                 valueYOffsetPx = valueYOffsetPx,
                 titleColor = titleColor,
-                valueColor = valueColor
+                valueColor = valueColor,
+                ringRadiusPx = ringRadiusPx,
+                ringStrokeWidthPx = ringStrokeWidthPx,
+                ringGapPx = ringGapPx,
+                ringCenterYOffsetPx = ringCenterYOffsetPx
             )
 
             // RIGHT
@@ -88,7 +106,11 @@ fun PairSection(
                 titleYOffsetPx = titleYOffsetPx,
                 valueYOffsetPx = valueYOffsetPx,
                 titleColor = titleColor,
-                valueColor = valueColor
+                valueColor = valueColor,
+                ringRadiusPx = ringRadiusPx,
+                ringStrokeWidthPx = ringStrokeWidthPx,
+                ringGapPx = ringGapPx,
+                ringCenterYOffsetPx = ringCenterYOffsetPx
             )
         }
     }
@@ -104,7 +126,11 @@ private fun RowScope.PairSlot(
     titleYOffsetPx: Float,
     valueYOffsetPx: Float,
     titleColor: Color,
-    valueColor: Color
+    valueColor: Color,
+    ringRadiusPx: Float,
+    ringStrokeWidthPx: Float,
+    ringGapPx: Float,
+    ringCenterYOffsetPx: Float
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float) = with(density) { px.toDp() }
@@ -116,7 +142,7 @@ private fun RowScope.PairSlot(
             .padding(horizontal = pxToDp(horizontalPaddingPx)),
         contentAlignment = alignment
     ) {
-        // ВАЖНО: высоту берём не секции, а anchorHeight (73px), и центрируем по вертикали
+        // высоту берём не секции, а anchorHeight (73px), и центрируем по вертикали
         PinnedTopBottomText(
             modifier = Modifier.height(pxToDp(anchorHeightPx)),
             topText = title,
@@ -124,7 +150,11 @@ private fun RowScope.PairSlot(
             titleYOffsetPx = titleYOffsetPx,
             valueYOffsetPx = valueYOffsetPx,
             titleColor = titleColor,
-            valueColor = valueColor
+            valueColor = valueColor,
+            ringRadiusPx = ringRadiusPx,
+            ringStrokeWidthPx = ringStrokeWidthPx,
+            ringGapPx = ringGapPx,
+            ringCenterYOffsetPx = ringCenterYOffsetPx
         )
     }
 }
@@ -137,7 +167,11 @@ private fun PinnedTopBottomText(
     titleYOffsetPx: Float,
     valueYOffsetPx: Float,
     titleColor: Color,
-    valueColor: Color
+    valueColor: Color,
+    ringRadiusPx: Float,
+    ringStrokeWidthPx: Float,
+    ringGapPx: Float,
+    ringCenterYOffsetPx: Float
 ) {
     val titleStyle = BaccaratTheme.typography.resultTitle.copy(color = titleColor)
     val valueStyle = BaccaratTheme.typography.resultValue.copy(color = valueColor)
@@ -145,25 +179,76 @@ private fun PinnedTopBottomText(
     Layout(
         modifier = modifier,
         content = {
+            // 0: top
             BasicText(text = topText, style = titleStyle)
-            BasicText(text = bottomText, style = valueStyle)
+
+            // 1: bottom (ring + value) with manual ring center offset
+            Layout(
+                content = {
+                    RingIcon(
+                        radiusPx = ringRadiusPx,
+                        strokeWidthPx = ringStrokeWidthPx,
+                        color = titleColor
+                    )
+                    BasicText(text = bottomText, style = valueStyle)
+                }
+            ) { measurables, constraints ->
+
+                val ring = measurables[0].measure(constraints)
+                val text = measurables[1].measure(constraints)
+
+                val width = ring.width + ringGapPx.roundToInt() + text.width
+                val height = max(ring.height, text.height)
+
+                layout(width, height) {
+                    // центр кольца относительно верхнего края строки (+ ручная подстройка)
+                    val ringCenterY = height / 2f + ringCenterYOffsetPx
+                    val ringY = (ringCenterY - ring.height / 2f).roundToInt()
+
+                    ring.placeRelative(0, ringY)
+                    text.placeRelative(ring.width + ringGapPx.roundToInt(), 0)
+                }
+            }
         }
     ) { measurables, constraints ->
 
         val title = measurables[0].measure(constraints.copy(minHeight = 0))
-        val value = measurables[1].measure(constraints.copy(minHeight = 0))
+        val bottomRow = measurables[1].measure(constraints.copy(minHeight = 0))
 
-        val w = max(title.width, value.width)
+        val w = max(title.width, bottomRow.width)
             .coerceIn(constraints.minWidth, constraints.maxWidth)
 
         val h = constraints.maxHeight
 
         layout(w, h) {
             val titleY = titleYOffsetPx.roundToInt()
-            val valueY = h - value.height + valueYOffsetPx.roundToInt()
+            val valueY = h - bottomRow.height + valueYOffsetPx.roundToInt()
 
             title.placeRelative(0, titleY)
-            value.placeRelative(0, valueY)
+            bottomRow.placeRelative(0, valueY)
         }
+    }
+}
+
+@Composable
+private fun RingIcon(
+    radiusPx: Float,
+    strokeWidthPx: Float,
+    color: Color
+) {
+    val density = LocalDensity.current
+    fun pxToDp(px: Float) = with(density) { px.toDp() }
+
+    // Stroke рисуется по центру, внешний радиус = R + W/2
+    val outer = radiusPx + strokeWidthPx / 2f
+    val sizeDp = pxToDp(outer * 2f)
+
+    Canvas(modifier = Modifier.size(sizeDp)) {
+        drawCircle(
+            color = color,
+            radius = radiusPx,
+            center = androidx.compose.ui.geometry.Offset(size.width / 2f, size.height / 2f),
+            style = Stroke(width = strokeWidthPx)
+        )
     }
 }

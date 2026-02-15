@@ -10,13 +10,13 @@ import com.zorindisplays.baccarat.ui.theme.BaccaratTheme
 import com.zorindisplays.baccarat.ui.theme.BaccaratThemeProvider
 import com.zorindisplays.baccarat.ui.theme.DefaultBackground
 import com.zorindisplays.baccarat.ui.theme.baseTheme
-import com.zorindisplays.baccarat.ui.theme.themeVariantBlue
+import com.zorindisplays.baccarat.ui.theme.themeVariantWhite
 
 @Composable
 fun App() {
     val base = baseTheme()
 
-    val tokens = themeVariantBlue(base)
+    val tokens = themeVariantWhite(base)
 
     BaccaratThemeProvider(tokens) {
         Box(

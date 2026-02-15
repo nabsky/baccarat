@@ -10,6 +10,7 @@ import com.zorindisplays.baccarat.ui.components.roads.BeadRoadItem
 import com.zorindisplays.baccarat.ui.components.roads.Road
 import com.zorindisplays.baccarat.ui.components.sections.MinMaxSection
 import com.zorindisplays.baccarat.ui.components.sections.PairSection
+import com.zorindisplays.baccarat.ui.components.sections.PredictionSection
 import com.zorindisplays.baccarat.ui.components.sections.ResultSection
 import com.zorindisplays.baccarat.ui.components.sections.TableShoeHandSection
 import com.zorindisplays.baccarat.ui.theme.BaccaratTheme
@@ -50,4 +51,5 @@ fun MainScreen() {
     TableShoeHandSection()
     ResultSection()
     PairSection()
+    PredictionSection()
 }

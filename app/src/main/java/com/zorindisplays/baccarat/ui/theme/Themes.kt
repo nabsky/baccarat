@@ -39,9 +39,9 @@ fun baseTheme(): BaccaratThemeTokens = BaccaratThemeTokens(
     )
 )
 
-fun themeVariantBlue(base: BaccaratThemeTokens): BaccaratThemeTokens =
+fun themeVariantWhite(base: BaccaratThemeTokens): BaccaratThemeTokens =
     base.copy(
         colors = base.colors.copy(
-            roadBackground = Color(0xFF3D7DFF)
+            roadBackground = Color(0xFFFFFFFF)
         )
     )

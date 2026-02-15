@@ -12,9 +12,12 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.geometry.Offset
 import com.zorindisplays.baccarat.ui.theme.BaccaratTheme
 import kotlin.math.max
 import kotlin.math.roundToInt
+
+private enum class PairBadgeType { BANKER, NATURAL, PLAYER }
 
 @Composable
 fun PairSection(
@@ -30,24 +33,35 @@ fun PairSection(
     // “виртуальная высота иконки” для совпадения уровней с ResultSection
     anchorHeightPx: Float = 73f,
 
-    // offsets (те же, что ты подогнал)
+    // offsets
     titleYOffsetPx: Float = -12f,
     valueYOffsetPx: Float = 8f,
 
     // padding для центра/права (левому сделаем 0)
     columnInnerPaddingPx: Float = 8f,
 
-    // цвета
+    // цвета текста
     titleColor: Color = BaccaratTheme.colors.textSecondaryColor,
     valueColor: Color = BaccaratTheme.colors.textPrimaryColor,
 
-    // ✅ кольцо слева от значения
+    // кольцо слева от значения
     ringRadiusPx: Float = 17f,
     ringStrokeWidthPx: Float = 6f,
     ringGapPx: Float = 10f,
 
-    // ✅ ручная подстройка вертикального центра кольца внутри строки значения
-    ringCenterYOffsetPx: Float = 7f
+    // ручная подстройка вертикального центра кольца внутри строки значения
+    ringCenterYOffsetPx: Float = 7f,
+
+    // badge (маленький кружок “пары” как в BeadRoadItem)
+    badgeRadiusPx: Float = 10f,
+    badgeStrokeWidthPx: Float = 5f,
+
+    bankerColor: Color = BaccaratTheme.colors.bankerColor,
+    playerColor: Color = BaccaratTheme.colors.playerColor,
+    naturalColor: Color = BaccaratTheme.colors.naturalColor,
+
+    // ✅ stroke кружка = фон экрана
+    badgeStrokeColor: Color = BaccaratTheme.colors.screenBackground
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float): Dp = with(density) { px.toDp() }
@@ -62,7 +76,6 @@ fun PairSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // LEFT: без отступов, прям в левый край секции
             PairSlot(
                 title = "BANKER PAIR",
                 value = bankerPairCount.toString(),
@@ -76,10 +89,16 @@ fun PairSection(
                 ringRadiusPx = ringRadiusPx,
                 ringStrokeWidthPx = ringStrokeWidthPx,
                 ringGapPx = ringGapPx,
-                ringCenterYOffsetPx = ringCenterYOffsetPx
+                ringCenterYOffsetPx = ringCenterYOffsetPx,
+                badgeType = PairBadgeType.BANKER,
+                badgeRadiusPx = badgeRadiusPx,
+                badgeStrokeWidthPx = badgeStrokeWidthPx,
+                bankerColor = bankerColor,
+                playerColor = playerColor,
+                naturalColor = naturalColor,
+                badgeStrokeColor = badgeStrokeColor
             )
 
-            // CENTER
             PairSlot(
                 title = "NATURAL",
                 value = naturalCount.toString(),
@@ -93,10 +112,16 @@ fun PairSection(
                 ringRadiusPx = ringRadiusPx,
                 ringStrokeWidthPx = ringStrokeWidthPx,
                 ringGapPx = ringGapPx,
-                ringCenterYOffsetPx = ringCenterYOffsetPx
+                ringCenterYOffsetPx = ringCenterYOffsetPx,
+                badgeType = PairBadgeType.NATURAL,
+                badgeRadiusPx = badgeRadiusPx,
+                badgeStrokeWidthPx = badgeStrokeWidthPx,
+                bankerColor = bankerColor,
+                playerColor = playerColor,
+                naturalColor = naturalColor,
+                badgeStrokeColor = badgeStrokeColor
             )
 
-            // RIGHT
             PairSlot(
                 title = "PLAYER PAIR",
                 value = playerPairCount.toString(),
@@ -110,7 +135,14 @@ fun PairSection(
                 ringRadiusPx = ringRadiusPx,
                 ringStrokeWidthPx = ringStrokeWidthPx,
                 ringGapPx = ringGapPx,
-                ringCenterYOffsetPx = ringCenterYOffsetPx
+                ringCenterYOffsetPx = ringCenterYOffsetPx,
+                badgeType = PairBadgeType.PLAYER,
+                badgeRadiusPx = badgeRadiusPx,
+                badgeStrokeWidthPx = badgeStrokeWidthPx,
+                bankerColor = bankerColor,
+                playerColor = playerColor,
+                naturalColor = naturalColor,
+                badgeStrokeColor = badgeStrokeColor
             )
         }
     }
@@ -130,7 +162,14 @@ private fun RowScope.PairSlot(
     ringRadiusPx: Float,
     ringStrokeWidthPx: Float,
     ringGapPx: Float,
-    ringCenterYOffsetPx: Float
+    ringCenterYOffsetPx: Float,
+    badgeType: PairBadgeType,
+    badgeRadiusPx: Float,
+    badgeStrokeWidthPx: Float,
+    bankerColor: Color,
+    playerColor: Color,
+    naturalColor: Color,
+    badgeStrokeColor: Color
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float) = with(density) { px.toDp() }
@@ -142,7 +181,6 @@ private fun RowScope.PairSlot(
             .padding(horizontal = pxToDp(horizontalPaddingPx)),
         contentAlignment = alignment
     ) {
-        // высоту берём не секции, а anchorHeight (73px), и центрируем по вертикали
         PinnedTopBottomText(
             modifier = Modifier.height(pxToDp(anchorHeightPx)),
             topText = title,
@@ -154,7 +192,14 @@ private fun RowScope.PairSlot(
             ringRadiusPx = ringRadiusPx,
             ringStrokeWidthPx = ringStrokeWidthPx,
             ringGapPx = ringGapPx,
-            ringCenterYOffsetPx = ringCenterYOffsetPx
+            ringCenterYOffsetPx = ringCenterYOffsetPx,
+            badgeType = badgeType,
+            badgeRadiusPx = badgeRadiusPx,
+            badgeStrokeWidthPx = badgeStrokeWidthPx,
+            bankerColor = bankerColor,
+            playerColor = playerColor,
+            naturalColor = naturalColor,
+            badgeStrokeColor = badgeStrokeColor
         )
     }
 }
@@ -171,7 +216,14 @@ private fun PinnedTopBottomText(
     ringRadiusPx: Float,
     ringStrokeWidthPx: Float,
     ringGapPx: Float,
-    ringCenterYOffsetPx: Float
+    ringCenterYOffsetPx: Float,
+    badgeType: PairBadgeType,
+    badgeRadiusPx: Float,
+    badgeStrokeWidthPx: Float,
+    bankerColor: Color,
+    playerColor: Color,
+    naturalColor: Color,
+    badgeStrokeColor: Color
 ) {
     val titleStyle = BaccaratTheme.typography.resultTitle.copy(color = titleColor)
     val valueStyle = BaccaratTheme.typography.resultValue.copy(color = valueColor)
@@ -179,39 +231,42 @@ private fun PinnedTopBottomText(
     Layout(
         modifier = modifier,
         content = {
-            // 0: top
             BasicText(text = topText, style = titleStyle)
 
-            // 1: bottom (ring + value) with manual ring center offset
+            // bottom (ring + badge + value)
             Layout(
                 content = {
-                    RingIcon(
-                        radiusPx = ringRadiusPx,
-                        strokeWidthPx = ringStrokeWidthPx,
-                        color = titleColor
+                    RingWithBadgeIcon(
+                        ringRadiusPx = ringRadiusPx,
+                        ringStrokeWidthPx = ringStrokeWidthPx,
+                        ringColor = titleColor,
+                        badgeType = badgeType,
+                        badgeRadiusPx = badgeRadiusPx,
+                        badgeStrokeWidthPx = badgeStrokeWidthPx,
+                        bankerColor = bankerColor,
+                        playerColor = playerColor,
+                        naturalColor = naturalColor,
+                        badgeStrokeColor = badgeStrokeColor
                     )
                     BasicText(text = bottomText, style = valueStyle)
                 }
             ) { measurables, constraints ->
-
-                val ring = measurables[0].measure(constraints)
+                val icon = measurables[0].measure(constraints)
                 val text = measurables[1].measure(constraints)
 
-                val width = ring.width + ringGapPx.roundToInt() + text.width
-                val height = max(ring.height, text.height)
+                val width = icon.width + ringGapPx.roundToInt() + text.width
+                val height = max(icon.height, text.height)
 
                 layout(width, height) {
-                    // центр кольца относительно верхнего края строки (+ ручная подстройка)
-                    val ringCenterY = height / 2f + ringCenterYOffsetPx
-                    val ringY = (ringCenterY - ring.height / 2f).roundToInt()
+                    val iconCenterY = height / 2f + ringCenterYOffsetPx
+                    val iconY = (iconCenterY - icon.height / 2f).roundToInt()
 
-                    ring.placeRelative(0, ringY)
-                    text.placeRelative(ring.width + ringGapPx.roundToInt(), 0)
+                    icon.placeRelative(0, iconY)
+                    text.placeRelative(icon.width + ringGapPx.roundToInt(), 0)
                 }
             }
         }
     ) { measurables, constraints ->
-
         val title = measurables[0].measure(constraints.copy(minHeight = 0))
         val bottomRow = measurables[1].measure(constraints.copy(minHeight = 0))
 
@@ -231,24 +286,70 @@ private fun PinnedTopBottomText(
 }
 
 @Composable
-private fun RingIcon(
-    radiusPx: Float,
-    strokeWidthPx: Float,
-    color: Color
+private fun RingWithBadgeIcon(
+    ringRadiusPx: Float,
+    ringStrokeWidthPx: Float,
+    ringColor: Color,
+    badgeType: PairBadgeType,
+    badgeRadiusPx: Float,
+    badgeStrokeWidthPx: Float,
+    bankerColor: Color,
+    playerColor: Color,
+    naturalColor: Color,
+    badgeStrokeColor: Color
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float) = with(density) { px.toDp() }
 
-    // Stroke рисуется по центру, внешний радиус = R + W/2
-    val outer = radiusPx + strokeWidthPx / 2f
-    val sizeDp = pxToDp(outer * 2f)
+    // stroke по центру
+    val ringOuter = ringRadiusPx + ringStrokeWidthPx / 2f
+    val badgeOuter = badgeRadiusPx + badgeStrokeWidthPx / 2f
+
+    // хотим, чтобы центр бейджа был на центральной линии stroke кольца => d = ringRadiusPx
+    val d = ringRadiusPx
+
+    // чтобы ничего не обрезалось, холст должен учитывать вылет бейджа
+    val extent = max(ringOuter, d + badgeOuter) // максимальная "полурадиусная" граница
+    val sizeDp = pxToDp(extent * 2f)
 
     Canvas(modifier = Modifier.size(sizeDp)) {
+        val c = Offset(size.width / 2f, size.height / 2f)
+
+        // кольцо
         drawCircle(
-            color = color,
-            radius = radiusPx,
-            center = androidx.compose.ui.geometry.Offset(size.width / 2f, size.height / 2f),
-            style = Stroke(width = strokeWidthPx)
+            color = ringColor,
+            radius = ringRadiusPx,
+            center = c,
+            style = Stroke(width = ringStrokeWidthPx)
+        )
+
+        // правильный сдвиг по диагонали: dx=dy=d/√2
+        val diag = (d / 1.41421356f)
+
+        val badgeCenter = when (badgeType) {
+            PairBadgeType.BANKER -> Offset(c.x - diag, c.y - diag)          // верх-лево на окружности
+            PairBadgeType.PLAYER -> Offset(c.x + diag, c.y + diag)          // низ-право на окружности
+            PairBadgeType.NATURAL -> c                                      // центр
+        }
+
+        val badgeFill = when (badgeType) {
+            PairBadgeType.BANKER -> bankerColor
+            PairBadgeType.PLAYER -> playerColor
+            PairBadgeType.NATURAL -> naturalColor
+        }
+
+        // заливка
+        drawCircle(
+            color = badgeFill,
+            radius = badgeRadiusPx,
+            center = badgeCenter
+        )
+        // обводка = фон экрана
+        drawCircle(
+            color = badgeStrokeColor,
+            radius = badgeRadiusPx,
+            center = badgeCenter,
+            style = Stroke(width = badgeStrokeWidthPx)
         )
     }
 }

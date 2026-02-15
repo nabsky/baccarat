@@ -28,8 +28,8 @@ fun TableShoeHandSection(
     handLabel: String = "HAND",
 
     tableValue: String = "1",
-    shoeValue: String = "7",
-    handValue: String = "63",
+    shoeValue: String = "0",
+    handValue: String = "0",
 
     labelStyle: TextStyle = BaccaratTheme.typography.tableLabel,
     valueStyle: TextStyle = BaccaratTheme.typography.tableValue,

@@ -1,7 +1,6 @@
 package com.zorindisplays.baccarat.ui.components.sections
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -22,7 +21,7 @@ fun TableShoeHandSection(
     width: Float = 618f,
     height: Float = 161f,
 
-    topBottomRowInset: Float = 6f, // тот же смысл, что в MinMaxSection
+    topBottomRowInset: Float = 6f,
 
     tableLabel: String = "TABLE",
     shoeLabel: String = "SHOE",
@@ -34,29 +33,28 @@ fun TableShoeHandSection(
 
     labelStyle: TextStyle = BaccaratTheme.typography.tableLabel,
     valueStyle: TextStyle = BaccaratTheme.typography.tableValue,
-    textColor: Color = BaccaratTheme.colors.textPrimaryColor,
 
-    // пока для отладки
+    // ✅ новые цвета
+    labelColor: Color = BaccaratTheme.colors.textSecondaryColor,
+    valueColor: Color = BaccaratTheme.colors.textPrimaryColor,
+
     backgroundColor: Color = Color.Red
 ) {
     val tm = rememberTextMeasurer()
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    Canvas(modifier = Modifier) {
 
-/*
+        /*
         drawRect(
             color = backgroundColor,
             topLeft = Offset(startX, startY),
             size = Size(width, height)
         )
-*/
+        */
 
         val tableRect = Rect(startX, startY, startX + width, startY + height)
 
-        // Как в MinMaxSection: верх 1/3, низ 2/3
         val topH = height / 3f
-        val bottomH = height - topH
-
         val colW = width / 3f
 
         fun topCell(col: Int): Rect {
@@ -72,22 +70,22 @@ fun TableShoeHandSection(
         fun insetTopRow(rect: Rect): Rect =
             Rect(rect.left, rect.top + topBottomRowInset, rect.right, rect.bottom - topBottomRowInset)
 
-        fun drawCentered(text: String, area: Rect, style: TextStyle) {
+        fun drawCentered(text: String, area: Rect, style: TextStyle, color: Color) {
             if (text.isEmpty()) return
             val layout = tm.measure(text = text, style = style)
             val x = area.left + (area.width - layout.size.width) / 2f
             val y = area.top + (area.height - layout.size.height) / 2f
-            drawText(layout, topLeft = Offset(x, y), color = textColor)
+            drawText(layout, topLeft = Offset(x, y), color = color)
         }
 
-        // Верхняя строка: заголовки (как у min/max)
-        drawCentered(tableLabel, insetTopRow(topCell(0)), labelStyle)
-        drawCentered(shoeLabel,  insetTopRow(topCell(1)), labelStyle)
-        drawCentered(handLabel,  insetTopRow(topCell(2)), labelStyle)
+        // верх
+        drawCentered(tableLabel, insetTopRow(topCell(0)), labelStyle, labelColor)
+        drawCentered(shoeLabel,  insetTopRow(topCell(1)), labelStyle, labelColor)
+        drawCentered(handLabel,  insetTopRow(topCell(2)), labelStyle, labelColor)
 
-        // Нижняя строка: значения, по центру объединённой области (2/3 высоты)
-        drawCentered(tableValue, bottomCell(0), valueStyle)
-        drawCentered(shoeValue,  bottomCell(1), valueStyle)
-        drawCentered(handValue,  bottomCell(2), valueStyle)
+        // низ
+        drawCentered(tableValue, bottomCell(0), valueStyle, valueColor)
+        drawCentered(shoeValue,  bottomCell(1), valueStyle, valueColor)
+        drawCentered(handValue,  bottomCell(2), valueStyle, valueColor)
     }
 }

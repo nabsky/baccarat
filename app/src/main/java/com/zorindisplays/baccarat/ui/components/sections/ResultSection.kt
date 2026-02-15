@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -30,9 +31,13 @@ fun ResultSection(
     iconTextGapPx: Float = 10f,
     beadCellSizePx: Float = 73f,
 
-    // ✅ вот эти красавцы
+    // offsets
     titleYOffsetPx: Float = -12f,
-    valueYOffsetPx: Float = 8f
+    valueYOffsetPx: Float = 8f,
+
+    // ✅ цвета
+    titleColor: Color = BaccaratTheme.colors.textSecondaryColor,
+    valueColor: Color = BaccaratTheme.colors.textPrimaryColor
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float): Dp = with(density) { px.toDp() }
@@ -46,10 +51,41 @@ fun ResultSection(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            ResultSlot(
+                title = "BANKER",
+                score = bankerScore,
+                result = BeadResult.BANKER,
+                beadSizePx = beadCellSizePx,
+                gapPx = iconTextGapPx,
+                titleYOffsetPx = titleYOffsetPx,
+                valueYOffsetPx = valueYOffsetPx,
+                titleColor = titleColor,
+                valueColor = valueColor
+            )
 
-            ResultSlot("BANKER", bankerScore, BeadResult.BANKER, beadCellSizePx, iconTextGapPx, titleYOffsetPx, valueYOffsetPx)
-            ResultSlot("TIE", tieScore, BeadResult.TIE, beadCellSizePx, iconTextGapPx, titleYOffsetPx, valueYOffsetPx)
-            ResultSlot("PLAYER", playerScore, BeadResult.PLAYER, beadCellSizePx, iconTextGapPx, titleYOffsetPx, valueYOffsetPx)
+            ResultSlot(
+                title = "TIE",
+                score = tieScore,
+                result = BeadResult.TIE,
+                beadSizePx = beadCellSizePx,
+                gapPx = iconTextGapPx,
+                titleYOffsetPx = titleYOffsetPx,
+                valueYOffsetPx = valueYOffsetPx,
+                titleColor = titleColor,
+                valueColor = valueColor
+            )
+
+            ResultSlot(
+                title = "PLAYER",
+                score = playerScore,
+                result = BeadResult.PLAYER,
+                beadSizePx = beadCellSizePx,
+                gapPx = iconTextGapPx,
+                titleYOffsetPx = titleYOffsetPx,
+                valueYOffsetPx = valueYOffsetPx,
+                titleColor = titleColor,
+                valueColor = valueColor
+            )
         }
     }
 }
@@ -62,7 +98,9 @@ private fun RowScope.ResultSlot(
     beadSizePx: Float,
     gapPx: Float,
     titleYOffsetPx: Float,
-    valueYOffsetPx: Float
+    valueYOffsetPx: Float,
+    titleColor: Color,
+    valueColor: Color
 ) {
     val density = LocalDensity.current
     fun pxToDp(px: Float) = with(density) { px.toDp() }
@@ -96,7 +134,9 @@ private fun RowScope.ResultSlot(
                 topText = title,
                 bottomText = score.toString(),
                 titleYOffsetPx = titleYOffsetPx,
-                valueYOffsetPx = valueYOffsetPx
+                valueYOffsetPx = valueYOffsetPx,
+                titleColor = titleColor,
+                valueColor = valueColor
             )
         }
     }
@@ -108,11 +148,12 @@ private fun PinnedTopBottomText(
     topText: String,
     bottomText: String,
     titleYOffsetPx: Float,
-    valueYOffsetPx: Float
+    valueYOffsetPx: Float,
+    titleColor: Color,
+    valueColor: Color
 ) {
-    val density = LocalDensity.current
-    val titleStyle = BaccaratTheme.typography.resultTitle.copy(color = BaccaratTheme.colors.textPrimaryColor)
-    val valueStyle = BaccaratTheme.typography.resultValue.copy(color = BaccaratTheme.colors.textPrimaryColor)
+    val titleStyle = BaccaratTheme.typography.resultTitle.copy(color = titleColor)
+    val valueStyle = BaccaratTheme.typography.resultValue.copy(color = valueColor)
 
     Layout(
         modifier = modifier,
@@ -129,7 +170,6 @@ private fun PinnedTopBottomText(
         val h = constraints.maxHeight
 
         layout(w, h) {
-
             val titleY = titleYOffsetPx.roundToInt()
             val valueY = h - value.height + valueYOffsetPx.roundToInt()
 

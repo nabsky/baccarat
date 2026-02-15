@@ -23,9 +23,9 @@ fun MinMaxSection(
     width: Float = 804f,
     height: Float = 161f,
 
-    leftColWidth: Float = 160f,              // фиксированная ширина 1-й колонки
-    cellInnerHPadding: Float = 12f,          // отступ слева в левом столбце
-    topBottomRowInset: Float = 6f,           // “небольшие отступы” в верх/низ строках
+    leftColWidth: Float = 160f,
+    cellInnerHPadding: Float = 12f,
+    topBottomRowInset: Float = 6f,
 
     // Заголовки
     minLabel: String = "MIN",
@@ -34,39 +34,41 @@ fun MinMaxSection(
     tieLabel: String = "TIE",
     pairLabel: String = "PAIR",
 
-    // Значения (без хардкода) — 3 колонки в средней и 3 в нижней строке
-    minRowValues: List<String> = listOf("1", "10", "5"),  // col 1..3
-    maxRowValues: List<String> = listOf("100", "50", "75"),  // col 1..3
+    // Значения
+    minRowValues: List<String> = listOf("1", "10", "5"),
+    maxRowValues: List<String> = listOf("100", "50", "75"),
 
-    // Формат отображения валюты
+    // Валюта
     currency: String = "€",
-    thousandSeparator: Char = ' ',           // пока не используем (под форматирование позже)
-    decimalSeparator: Char = ',',            // пока не используем
+    thousandSeparator: Char = ' ',
+    decimalSeparator: Char = ',',
     isCurrencyPrefix: Boolean = false,
 
-    // Геометрия “большого прямоугольника” для цифр (он центрируется в ячейке)
     valueRectWidthFraction: Float = 0.72f,
 
-    // Стили/цвета
+    // Стили
     labelStyle: TextStyle = BaccaratTheme.typography.minMaxLabel,
     valueStyle: TextStyle = BaccaratTheme.typography.minMaxValue,
-    textColor: Color = BaccaratTheme.colors.textPrimaryColor,
 
-    // фон секции (пока красный)
+    // ✅ Цвета (как в ResultSection)
+    labelColor: Color = BaccaratTheme.colors.textSecondaryColor,
+    valueColor: Color = BaccaratTheme.colors.textPrimaryColor,
+
+    // фон секции (если нужен)
     backgroundColor: Color = Color.Red
 ) {
     val tm = rememberTextMeasurer()
 
     Canvas(modifier = Modifier.fillMaxSize()) {
 
-        // фон секции
-/*
+        // фон секции (у тебя он закомментирован — оставляю как опционально)
+        /*
         drawRect(
             color = backgroundColor,
             topLeft = Offset(startX, startY),
             size = Size(width, height)
         )
-*/
+        */
 
         val table = Rect(startX, startY, startX + width, startY + height)
 
@@ -93,20 +95,20 @@ fun MinMaxSection(
                 else -> rect
             }
 
-        fun drawCentered(text: String, area: Rect, style: TextStyle) {
+        fun drawCentered(text: String, area: Rect, style: TextStyle, color: Color) {
             if (text.isEmpty()) return
             val layout = tm.measure(text = text, style = style)
             val x = area.left + (area.width - layout.size.width) / 2f
             val y = area.top + (area.height - layout.size.height) / 2f
-            drawText(layout, topLeft = Offset(x, y), color = textColor)
+            drawText(layout, topLeft = Offset(x, y), color = color)
         }
 
-        fun drawLeft(text: String, area: Rect, style: TextStyle) {
+        fun drawLeft(text: String, area: Rect, style: TextStyle, color: Color) {
             if (text.isEmpty()) return
             val layout = tm.measure(text = text, style = style)
             val x = area.left + cellInnerHPadding
             val y = area.top + (area.height - layout.size.height) / 2f
-            drawText(layout, topLeft = Offset(x, y), color = textColor)
+            drawText(layout, topLeft = Offset(x, y), color = color)
         }
 
         /**
@@ -117,7 +119,7 @@ fun MinMaxSection(
         fun drawValue(value: String, cell: Rect) {
             if (value.isEmpty() && currency.isEmpty()) return
 
-            val area = cell // высоту уже центрируем внутри, inset решается снаружи rowTextArea
+            val area = cell
             val bigW = area.width * valueRectWidthFraction
             val bigLeft = area.left + (area.width - bigW) / 2f
             val bigRect = Rect(bigLeft, area.top, bigLeft + bigW, area.bottom)
@@ -125,21 +127,21 @@ fun MinMaxSection(
             val text = if (isCurrencyPrefix) "$currency$value" else "$value$currency"
             val layout = tm.measure(text = text, style = valueStyle)
 
-            val x = bigRect.right - layout.size.width  // <-- right-aligned to bigRect
+            val x = bigRect.right - layout.size.width
             val y = area.top + (area.height - layout.size.height) / 2f
-            drawText(layout, topLeft = Offset(x, y), color = textColor)
+            drawText(layout, topLeft = Offset(x, y), color = valueColor)
         }
 
-        // --- Row 0: "" | banker/player | tie | pair ---
+        // Row 0
         run {
-            drawCentered(bankerPlayerLabel, rowTextArea(cellRect(0, 1), 0), labelStyle)
-            drawCentered(tieLabel,          rowTextArea(cellRect(0, 2), 0), labelStyle)
-            drawCentered(pairLabel,         rowTextArea(cellRect(0, 3), 0), labelStyle)
+            drawCentered(bankerPlayerLabel, rowTextArea(cellRect(0, 1), 0), labelStyle, labelColor)
+            drawCentered(tieLabel,          rowTextArea(cellRect(0, 2), 0), labelStyle, labelColor)
+            drawCentered(pairLabel,         rowTextArea(cellRect(0, 3), 0), labelStyle, labelColor)
         }
 
-        // --- Row 1: min | v1 | v2 | v3 ---
+        // Row 1
         run {
-            drawLeft(minLabel, rowTextArea(cellRect(1, 0), 1), labelStyle)
+            drawLeft(minLabel, rowTextArea(cellRect(1, 0), 1), labelStyle, labelColor)
 
             val v1 = minRowValues.getOrNull(0).orEmpty()
             val v2 = minRowValues.getOrNull(1).orEmpty()
@@ -150,9 +152,9 @@ fun MinMaxSection(
             drawValue(v3, rowTextArea(cellRect(1, 3), 1))
         }
 
-        // --- Row 2: max | v1 | v2 | v3 ---
+        // Row 2
         run {
-            drawLeft(maxLabel, rowTextArea(cellRect(2, 0), 2), labelStyle)
+            drawLeft(maxLabel, rowTextArea(cellRect(2, 0), 2), labelStyle, labelColor)
 
             val v1 = maxRowValues.getOrNull(0).orEmpty()
             val v2 = maxRowValues.getOrNull(1).orEmpty()

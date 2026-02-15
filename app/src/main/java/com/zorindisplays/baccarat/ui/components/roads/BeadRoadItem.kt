@@ -27,6 +27,8 @@ fun BeadRoadItem(
     pairRadius: Float = 10f,
     pairStrokeWidth: Float = 5f,
 
+    centerTextYOffset: Float = 2f,   // ← ВОТ ОН
+
     result: BeadResult,
     isBankerPair: Boolean,
     isPlayerPair: Boolean,
@@ -48,37 +50,31 @@ fun BeadRoadItem(
     val tm = rememberTextMeasurer()
 
     Canvas(modifier = modifier) {
-        // реальный размер канваса может отличаться — подстрахуемся
+
         val s = min(cellSize, min(size.width, size.height))
         val cellCenter = Offset(s / 2f, s / 2f)
 
-        // фон ячейки (если фон рисуется отдельно — можешь убрать)
         drawRect(
             color = cellBackgroundColor,
             topLeft = Offset.Zero,
             size = Size(s, s)
         )
 
-        // цвет результата
         val fill = when (result) {
             BeadResult.BANKER -> bankerColor
             BeadResult.PLAYER -> playerColor
             BeadResult.TIE -> tieColor
         }
 
-        // круг результата по центру
         drawCircle(
             color = fill,
             radius = resultRadius,
             center = cellCenter
         )
 
-        // чтобы край обводки пары НЕ выходил за ячейку:
-        // stroke рисуется по центру, значит надо inset = stroke/2
         val inset = pairStrokeWidth / 2f
         val cornerCenter = pairRadius + inset
 
-        // banker pair: верх-лево
         if (showPairs && isBankerPair) {
             val p = Offset(cornerCenter, cornerCenter)
             drawCircle(color = bankerColor, radius = pairRadius, center = p)
@@ -90,7 +86,6 @@ fun BeadRoadItem(
             )
         }
 
-        // player pair: низ-право
         if (showPairs && isPlayerPair) {
             val p = Offset(s - cornerCenter, s - cornerCenter)
             drawCircle(color = playerColor, radius = pairRadius, center = p)
@@ -102,12 +97,12 @@ fun BeadRoadItem(
             )
         }
 
-        // текст в центре: score или буква
         val symbol = when (result) {
             BeadResult.BANKER -> "B"
             BeadResult.PLAYER -> "P"
             BeadResult.TIE -> "T"
         }
+
         val centerText = resultScore?.coerceIn(0, 9)?.toString() ?: symbol
         val textColor = if (showNatural && isNatural) naturalColor else Color.White
 
@@ -116,21 +111,14 @@ fun BeadRoadItem(
             style = centerTextStyle.copy(color = textColor)
         )
 
-        // X: обычный центр
         val x = cellCenter.x - layout.size.width / 2f
 
-        // Y: оптическое центрирование по baseline (совместимо со старыми версиями)
-        // ascent ~= firstBaseline, descent ~= height - firstBaseline
         val ascent = layout.firstBaseline
         val descent = layout.size.height - layout.firstBaseline
         val baselineY = cellCenter.y + (ascent - descent) / 2f
 
-        // drawText ждёт topLeft, поэтому переносим baseline -> top
-        val y = baselineY - layout.firstBaseline
+        val y = baselineY - layout.firstBaseline + centerTextYOffset
 
-        drawText(
-            layout,
-            topLeft = Offset(x, y)
-        )
+        drawText(layout, topLeft = Offset(x, y))
     }
 }

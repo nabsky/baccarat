@@ -35,8 +35,8 @@ fun MinMaxSection(
     pairLabel: String = "PAIR",
 
     // Значения
-    minRowValues: List<String> = listOf("1", "10", "5"),
-    maxRowValues: List<String> = listOf("100", "50", "75"),
+    minRowValues: List<String> = listOf("10", "10", "10"),
+    maxRowValues: List<String> = listOf("5000", "1000", "500"),
 
     // Валюта
     currency: String = "€",

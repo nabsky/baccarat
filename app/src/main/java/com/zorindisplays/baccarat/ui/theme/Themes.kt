@@ -27,14 +27,15 @@ fun baseTheme(): BaccaratThemeTokens = BaccaratThemeTokens(
         logoSecondaryColor  = Color(0xFFFFFFFF)
     ),
     typography = BaccaratTypography(
-        minMaxLabel = BaseTextStyle.copy(fontSize = 20.sp),
-        minMaxValue = BaseTextStyle.copy(fontSize = 40.sp),
-        tableLabel  = BaseTextStyle.copy(fontSize = 20.sp),
-        tableValue  = BaseTextStyle.copy(fontSize = 80.sp),
-        resultTitle = BaseTextStyle.copy(fontSize = 20.sp),
-        resultValue = BaseTextStyle.copy(fontSize = 40.sp),
-        pairTitle   = BaseTextStyle.copy(fontSize = 20.sp),
-        pairValue   = BaseTextStyle.copy(fontSize = 40.sp)
+        minMaxLabel     = BaseTextStyle.copy(fontSize = 20.sp),
+        minMaxValue     = BaseTextStyle.copy(fontSize = 40.sp),
+        tableLabel      = BaseTextStyle.copy(fontSize = 20.sp),
+        tableValue      = BaseTextStyle.copy(fontSize = 80.sp),
+        resultTitle     = BaseTextStyle.copy(fontSize = 20.sp),
+        resultValue     = BaseTextStyle.copy(fontSize = 40.sp),
+        pairTitle       = BaseTextStyle.copy(fontSize = 20.sp),
+        pairValue       = BaseTextStyle.copy(fontSize = 40.sp),
+        beadRoadItem    = BaseTextStyle.copy(fontSize = 30.sp),
     )
 )
 

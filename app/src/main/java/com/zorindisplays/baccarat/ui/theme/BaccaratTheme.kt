@@ -63,6 +63,8 @@ data class BaccaratTypography(
 
     val pairTitle: TextStyle,
     val pairValue: TextStyle,
+
+    val beadRoadItem: TextStyle,
 )
 
 @Immutable

@@ -1,9 +1,16 @@
 package com.zorindisplays.baccarat.ui.screens
 
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.zorindisplays.baccarat.ui.components.roads.BeadResult
+import com.zorindisplays.baccarat.ui.components.roads.BeadRoadItem
 import com.zorindisplays.baccarat.ui.components.roads.Road
 import com.zorindisplays.baccarat.ui.components.sections.MinMaxSection
 import com.zorindisplays.baccarat.ui.components.sections.TableShoeHandSection
+import com.zorindisplays.baccarat.ui.theme.BaccaratTheme
 
 @Composable
 fun MainScreen() {
@@ -39,4 +46,16 @@ fun MainScreen() {
     )
     MinMaxSection()
     TableShoeHandSection()
+    BeadRoadItem(
+        modifier = Modifier.size(73.dp).offset(x = 25.dp, y = 317.dp), // обычно: .size(cellSizeDp)
+        result = BeadResult.BANKER,
+        isBankerPair = true,
+        isPlayerPair = true,
+        isNatural = false,
+        resultScore = null,
+        showPairs = true,
+        showNatural = true,
+        cellBackgroundColor = BaccaratTheme.colors.screenBackground,
+        pairStrokeColor = BaccaratTheme.colors.screenBackground,
+    )
 }
